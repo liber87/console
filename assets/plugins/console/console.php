@@ -1,7 +1,12 @@
 <?php
 
 	include_once('../assets/libs/document.class.inc.php');
-	
+	$language = (isset($language))? $language : $modx->config['manager_language'];
+	$languageFolder = MODX_BASE_PATH.'assets/plugins/console/lang';
+	if (!file_exists($languageFolder."/".$language.".inc.php")) {
+    	$language ="english";
+	}
+	include_once($languageFolder."/".$language.".inc.php");
 	if ($_POST['fast_resourse']!=''){
 		if ($_POST['type']=='1'){
 			$p = explode('<br />',nl2br(strip_tags($_POST['fast_resourse'])));
@@ -54,7 +59,7 @@ foreach($rows as $row) {
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta content="text/html; charset=utf-8" http-equiv="content-type">
-		<meta content="russian-UTF8" name="language">
+		<meta content="<?php echo $language; ?>" name="language">
 		<meta content="Bumkaka" name="author">
 		<title>Console MODx</title>
 		<link rel="stylesheet" type="text/css" href="media/style/<?php echo $modx->config['manager_theme']; ?>/style.css" /> 	
@@ -102,13 +107,13 @@ foreach($rows as $row) {
 				
 				
 				<div class="tab-page" id="tab-import">
-					<h2 class="tab">Быстрый импорт</h2>
+					<h2 class="tab"><?php echo $_lang['quick_import']; ?></h2>
 							
 					<form method="POST" action="index.php?a=console">
 					CSV:<br/>
 						<textarea name="import" style="width:99%;height:100px"><?php echo $_POST['import']; ?></textarea>
 						<br/>
-						Обрабатывающий код:<br/>
+						<?php echo $_lang['code_to_process']; ?>:<br/>
 						<textarea name="code" style="width:99%;height:200px"><?php 
 						
 						$code = '$rows = explode ("\n",$_POST["text"]);
@@ -119,7 +124,7 @@ foreach($rows as $row) {
 
 	echo $row["1"]. " &nbsp;  " .$row["9"] ."<br/>";
 
-	/* указываем нужные параметры */
+	/* '.$_lang['parameters_needed'].' */
 	$doc = new Document();
 	$doc->Set("parent", 203);
 	$doc->Set("template", 21);
@@ -133,7 +138,7 @@ foreach($rows as $row) {
 	//$doc->Set("createdon", $row["6"]);
 	//$doc->Set("pub_date", $row["7"]);
 
-	/* твшки */ 
+	/* '.$_lang['tvs'].' */ 
 	$doc->Set("tvimage", $row["9"]);
 
 $doc->Save(); 
@@ -143,7 +148,7 @@ $doc->Save();
 						
 						
 						?></textarea>
-						<input type="submit">
+						<input type="submit" value="<?php echo $_lang['run']; ?>">
 					</form>
 					<script type="text/javascript">
 							tpSearchOptions.addTabPage($('tab-import'));
@@ -154,17 +159,17 @@ $doc->Save();
 				
 				
 				<div class="tab-page" id="tab-create">
-					<h2 class="tab">Создание ресурсов</h2>
+					<h2 class="tab"><?php echo $_lang['resources_creation'];?></h2>
 							
 					<form method="POST" action="index.php?a=console">
 						<table width="100%">
 							<tr>
-								<td width="160px">Перечень PAGETITLE<br/>через запятую</td>
+								<td width="160px"><?php echo $_lang['list_of_pagetitles'];?><br/><?php echo $_lang['comma_separated'];?></td>
 								<td><textarea name="fast_resourse" style="width:99%;height:150px"><?php echo $_POST['fast_resourse']; ?></textarea>
 								</td>
 							</tr>
 							<tr>
-								<td>Шаблон</td>
+								<td><?php echo $_lang['template'];?></td>
 								<td>
 									<select name="template">
 										<?php
@@ -178,25 +183,25 @@ $doc->Save();
 								</td>
 							</tr>
 							<tr>
-								<td>Родитель</td>
+								<td><?php echo $_lang['parent'];?></td>
 								<td><input name="parent" value="<?php echo $_POST['parent']; ?>"/></td>
 							</tr>
 							<tr>
-								<td>Показывать в меню</td>
+								<td><?php echo $_lang['show_in_menu'];?></td>
 								<td><input type="checkbox" value="0"></td>
 							</tr>
 						</table>
 						
 						<br/>
-						<input type="submit">
+						<input type="submit" value="<?php echo $_lang['run']; ?>">
 						<p>
 							<?php echo $error['fast_resourse'];?>
 						</p>
 						<p>
-						<label><input type="radio" name="type" value="1" checked/>Быстрое создание ресурсов.<br/> <small><i>Пример: События,Новости,Архив</i></small></label>
+						<label><input type="radio" name="type" value="1" checked/><?php echo $_lang['quick_creation'];?><br/> <small><i><?php echo $_lang['for_example'];?></i></small></label>
 						</p>
 						<p>
-						<label><input type="radio" name="type" value="2" />Продвинутое создание ресурсов.<br/> <small><i>Пример: События,Новости,Архив</i></small></label>
+						<label><input type="radio" name="type" value="2" /><?php echo $_lang['advanced_creation'];?><br/> <small><i><?php echo $_lang['for_example'];?></i></small></label>
 						</p>
 						
 					</form>
@@ -207,14 +212,14 @@ $doc->Save();
 				
 				
 				<div class="tab-page" id="tab-sql">
-					<h2 class="tab">Выполнить SQL запрос</h2>
+					<h2 class="tab"><?php echo $_lang['run_sql_query'];?></h2>
 							
 					<form method="POST" action="index.php?a=console">
 						<textarea name="sql" style="width:99%;height:150px"><?php 
 						echo $_POST['sql']==''?'SELECT id,pagetitle FROM '.$modx->db->config['table_prefix'].'site_content':$_POST['sql']; 
 						?></textarea>
 						<br/>
-						<input type="submit">
+						<input type="submit" value="<?php echo $_lang['run']; ?>">
 					</form>
 					
 					<div>
@@ -247,7 +252,7 @@ $doc->Save();
 							}
 							
 							$table = '<div style="height: 200px;overflow: scroll;width: auto;"><table class="MySql" border=1 cellspacing=0 cellpadding=3>'.$head.$body.'</table></div>';
-							echo 'Результат вернул '.$modx->db->getAffectedRows().' строк за '.$totaltime.' сек.<br/>';
+							echo $lang['query_complete'].' '.$modx->db->getAffectedRows().' '.$_lang['rows'].' '.$totaltime.' '.$_lang['time'].'<br/>';
 							echo $table;
 						}
 						
@@ -263,13 +268,13 @@ $doc->Save();
 				
 				
 				<div class="tab-page" id="tab-php">
-					<h2 class="tab">Выполнить PHP код</h2>
+					<h2 class="tab"><?php echo $_lang['run_php_code'];?></h2>
 							
 					<form method="POST" action="index.php?a=console">
 						<textarea name="php" style="width:99%;height:150px"><?php echo $_POST['php']; ?></textarea>
 						<br/>
 						
-						<input type="submit">
+						<input type="submit" value="<?php echo $_lang['run']; ?>">
 						<div style="height: 200px;overflow: scroll;width: auto;background:none repeat scroll 0 0 #F9F9F9;background: none repeat scroll 0 0 #F9F9F9;
 border-color: #999999 #DDDDDD #DDDDDD #999999;
 border-radius: 3px 3px 3px 3px;
@@ -294,7 +299,7 @@ vertical-align: baseline;">
 				
 				
 				<div class="tab-page" id="tab-pek">
-					<h2 class="tab">Справка</h2>
+					<h2 class="tab"><?php echo $_lang['about'];?></h2>
 							
 					<p>	MODx Console<br/>
 						Author: Bumkaka<br/>
