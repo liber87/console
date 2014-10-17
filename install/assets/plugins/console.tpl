@@ -8,7 +8,7 @@
  * @version     0.2
  * @author		By Bumkaka
  * @internal    @properties 
- * @internal    @events OnManagerTreeRender,OnManagerPageInit,OnManagerPageInit
+ * @internal    @events OnManagerTreeRender,OnManagerPageInit
  * @internal	@properties &modal=Use modal;list;yes,no;yes &jquery=jQuery source;list;local (assets/js),remote (google code),manual url (specify below);local (assets/js) &manual=jQuery URL override;text;
  * @internal    @modx_category Manager and Admin
  * @internal    @installset base
