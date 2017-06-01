@@ -143,16 +143,18 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 			        	var textarea = $('textarea[data-editor]',this);
 			        	var code = textarea.val();
 			        	var mode = textarea.data('editor');
+			        	var results = $('.results',form.parent());
 			        	$('input').prop('disabled',true);
 			        	$.post(window.location.href,{
 			        		mode: mode,
 			        		code: code
 			        	},function(response){
 			        		$('input').prop('disabled',false);
-			        		$('.results',form.parent()).html(response);
-			        	}).fail(function(){
+			        		results.html(response);
+			        	}).fail(function(xhr){
+			        		results.html(xhr.responseText);
 			        		$('input').prop('disabled',false);
-			        		alert('Server error');
+			        		alert('Server error '+xhr.status+': '+xhr.statusText);
 			        	});
 			        });
 				});
