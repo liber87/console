@@ -6,7 +6,7 @@ $modx->db->connect();
 if (empty ($modx->config)) {
     $modx->getSettings();
 }
-if(!isset($_SESSION['mgrValidated']) || $_SESSION['mgrRole'] != 1){
+if(!isset($_SESSION['mgrValidated']) || $_SESSION['mgrRole'] != 1 || !isset($modx->pluginCache['Console'])){
     die();
 }
 $modx->invokeEvent('OnManagerPageInit',array('invokedBy'=>'Console'));
