@@ -79,6 +79,7 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 		<link rel="stylesheet" type="text/css" href="<?php echo MODX_MANAGER_URL; ?>media/style/<?php echo $modx->config['manager_theme']; ?>/style.css" /> 	
 		<script src="<?php echo MODX_MANAGER_URL; ?>media/script/jquery/jquery.min.js" type="text/javascript"></script>
 		<script src="<?php echo MODX_SITE_URL; ?>assets/plugins/console/ace/ace.js" type="text/javascript"></script>
+		<script src="<?php echo MODX_SITE_URL; ?>assets/plugins/console/ace/ext-language_tools.js" type="text/javascript"></script>
 		<style>
 			 .MySql th, .MySql td {
 				margin: 0.1em;
@@ -124,15 +125,30 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 					$('textarea[data-editor]').each(function () {
 			            var textarea = $(this);
 			            var mode = textarea.data('editor');
-			            console.log(mode);
 			            var editDiv = $('<div>', {
 			                width: '100%',
 			                height: 150
 			            }).insertBefore(textarea);
 			            textarea.hide();
 			            var editor = ace.edit(editDiv[0]);
+			            editor.$blockScrolling = Infinity;
 			            editor.getSession().setValue(textarea.val());
-			            editor.getSession().setMode({path:"ace/mode/" + mode,inline:true});
+			            editor.getSession().setMode("ace/mode/" + mode);
+			            ace.config.loadModule("ace/ext/emmet", function () {
+				            ace.require("ace/lib/net").loadScript("emmet.js", function () {
+				                editor.setOption("enableEmmet", true);
+				            });
+				        });
+				 
+				        ace.config.loadModule("ace/ext/language_tools", function () {
+				            ace.require("ace/lib/net").loadScript("emmet.js", function () {
+				                editor.setOptions({
+					                enableSnippets: true,
+					                enableBasicAutocompletion: true,
+					                enableLiveAutocompletion: false
+					            });
+				            });
+				        });
 			            textarea.closest('form').submit(function () {
 			                textarea.val(editor.getSession().getValue());
 			            })
@@ -187,7 +203,7 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 					<h2 class="tab"><?php echo $_lang['run_php_code'];?></h2>
 							
 					<form method="POST">
-						<textarea name="php" data-editor="php" class="php"><?php echo $_SESSION['console']['php']; ?></textarea>
+						<textarea name="php" data-editor="php" class="php"><?php echo $_SESSION['console']['php']==''?"<?php\n":$_SESSION['console']['php']; ?></textarea>
 						<br/>
 						
 						<input type="submit" value="<?php echo $_lang['run']; ?>">
