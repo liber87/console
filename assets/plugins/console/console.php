@@ -31,7 +31,7 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 	$code = $_POST['code'];
 	$_SESSION['console'][$mode] = $code;
 	if ($mode == 'php') {
-		eval($code);
+		eval(preg_replace('/^<\?php(.*)(\?>)?$/s', '$1', $code));
 	} else {
 		if ($code!=''){
 			$tstart = $modx->getMicroTime();
