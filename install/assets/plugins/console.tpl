@@ -38,6 +38,6 @@ if (menu.tagName === 'TABLE') {
     menu.appendChild(el.firstChild);
 }
 console;
-    $e->output('<script>'.$SCRIPT.'</script');
+    $e->output('<script>'.$SCRIPT.'</script>');
     break;
 }
