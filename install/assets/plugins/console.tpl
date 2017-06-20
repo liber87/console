@@ -33,7 +33,7 @@ var menu = document.getElementById('treeMenu');
 var el = document.createElement('td');
 el.innerHTML = icon;
 if (menu.tagName === 'TABLE') {
-    menu.getElementsByTagName(tr).appendChild(el);
+    menu.getElementsByTagName('table')[0].getElementsByTagName('tr')[0].appendChild(el);
 } else {
     menu.appendChild(el.firstChild);
 }
