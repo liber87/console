@@ -24,3 +24,4 @@ $_lang['time'] = "s";
 $_lang['run_php_code'] = "Run PHP code";
 $_lang['about'] = "About";
 $_lang['run'] = "Run";
+$_lang['login_as_admin'] = "Login as Administrator to use Console";

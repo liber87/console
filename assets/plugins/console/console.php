@@ -6,7 +6,7 @@ $modx->db->connect();
 if (empty ($modx->config)) {
     $modx->getSettings();
 }
-if(!isset($_SESSION['mgrValidated']) || $_SESSION['mgrRole'] != 1 || !isset($modx->pluginCache['Console'])){
+if (!isset($modx->pluginCache['Console'])){
     die();
 }
 $modx->invokeEvent('OnManagerPageInit',array('invokedBy'=>'Console'));
@@ -14,7 +14,9 @@ $language = $modx->config['manager_language'];
 include_once(MODX_BASE_PATH.'assets/plugins/console/lang/english.inc.php');
 $languageFile = MODX_BASE_PATH."assets/plugins/console/lang/{$language}.inc.php";
 if (file_exists($languageFile)) include_once ($languageFile);
-
+if(!isset($_SESSION['mgrValidated']) || $_SESSION['mgrRole'] != 1) {
+	die($_lang['login_as_admin']);
+}
 if (!isset($_SESSION['console'])) {
 	$_SESSION['console'] = array(
 		'sql' => '',
