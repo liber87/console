@@ -26,7 +26,11 @@ if (!isset($_SESSION['console'])) {
 
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) 
 	&& (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
-        
+$q = $modx->db->query("SHOW TABLES");
+$tables = array();
+while ($row = $modx->db->getRow($q)) {
+    $tables[] = array_values($row)[0];
+}
 if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 	$out = '';
 	$mode = $_POST['mode'];
@@ -92,6 +96,14 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 			.MySql{
 			border-collapse: collapse;
 			}
+            .tables, .queries {
+                display: inline-block;
+                margin-bottom:15px;
+            }
+            .tables select, .tables button,  .queries select, .queries button{
+                width:auto;
+                display: inline-block;
+            }
 			th {
 				background: -moz-linear-gradient(center top , #FFFFFF, #CCCCCC) repeat scroll 0 0 transparent;
 				color: #000000;
@@ -123,11 +135,31 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 						var index = $(this).addClass('selected').index();
 						$('.tab-page').hide().eq(index).show();
 					});
+					$('.tables').on('click','button',function(e){
+					    var text = '`'+$('select[name="tables-list"]').val()+'`';
+					    var editor = ace.edit('sql-editor');
+                        editor.getSession().insert(editor.getCursorPosition(), text);
+                    }).on('change','select',function(e){
+                        var table = '`'+this.value+'`';
+                        $('option','select[name="tables-queries"]').each(function(){
+                            var value = this.value;
+                            $(this).text(this.value.replace('[+table+]',table));
+                        });
+                    });
+                    $('select[name="tables-list"]').trigger('change');
+                    $('.queries').on('click','button',function(e){
+                        var text = $('select[name="tables-queries"]').val();
+                        var table = '`'+$('select[name="tables-list"]').val()+'`';
+                        text = text.replace('[+table+]',table);
+                        var editor = ace.edit('sql-editor');
+                        editor.getSession().insert(editor.getCursorPosition(), text);
+                    });
 					$('.tab',pane).eq(0).click();
 					$('textarea[data-editor]').each(function () {
 			            var textarea = $(this);
 			            var mode = textarea.data('editor');
 			            var editDiv = $('<div>', {
+			                id:'sql-editor',
 			                width: '100%',
 			                height: 150
 			            }).insertBefore(textarea);
@@ -187,10 +219,30 @@ if ($isAjax && isset($_POST['code']) && isset($_POST['mode'])) {
 			<div class="tab-pane" id="modulePane">
 				<div class="tab-page" id="tab-sql">
 					<h2 class="tab"><?php echo $_lang['run_sql_query'];?></h2>
-							
+                    <div class="queries">
+                        <select name="tables-queries">
+                            <?php
+                            $options = array("SELECT * FROM [+table+] WHERE ", "UPDATE [+table+] SET  WHERE ","INSERT INTO [+table+] () VALUES ()","DELETE FROM [+table+] WHERE ","TRUNCATE TABLE [+table+]","DROP TABLE [+table+]");
+                            foreach ($options as $option) {
+                                echo "<option value=\"{$option}\">{$option}</option>";
+                            }
+                            ?>
+                        </select>
+                        <button class="fa fa-paste"></button>
+                    </div>
+					<div class="tables">
+                        <select name="tables-list">
+                            <?php
+                                foreach ($tables as $table) {
+                                    echo "<option value=\"{$table}\">{$table}</option>";
+                                }
+                            ?>
+                        </select>
+                        <button class="fa fa-paste"></button>
+                    </div>
 					<form method="POST">
 						<textarea name="sql" data-editor="sql" class="sql"><?php 
-						echo $_SESSION['console']['sql']==''?'SELECT id,pagetitle FROM '.$modx->getFullTableName('site_content'):$_SESSION['console']['sql']; 
+						echo $_SESSION['console']['sql'];
 						?></textarea>
 						<br/>
 						<input type="submit" value="<?php echo $_lang['run']; ?>">

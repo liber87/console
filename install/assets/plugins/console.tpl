@@ -5,7 +5,7 @@
  * just make MODx evo development easy
  *
  * @category    plugin
- * @version     1.0
+ * @version     1.2.0
  * @author		By Bumkaka, Pathologic
  * @internal    @properties 
  * @internal    @events OnManagerTreeRender
@@ -21,7 +21,7 @@ switch ($e->name)
     case 'OnManagerTreeRender':
     if ($modal=='yes')
     $SCRIPT = <<<console
-var icon = '<a class="treeButton"  onclick="window.open(\'../assets/plugins/console/console.php\',\'gener\',\'width=800,height=520,top=\'+((screen.height-600)/2)+\',left=\'+((screen.width-800)/2)+\',toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no\')" title="Console"><i class="fa fa-terminal fa-lg"></i></a>';
+var icon = '<a class="treeButton"  onclick="window.open(\'../assets/plugins/console/console.php\',\'gener\',\'width=800,height=560,top=\'+((screen.height-600)/2)+\',left=\'+((screen.width-800)/2)+\',toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no\')" title="Console"><i class="fa fa-terminal fa-lg"></i></a>';
 console;
     
     if ($modal=='no')
