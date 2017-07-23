@@ -5,7 +5,7 @@
  * just make MODx evo development easy
  *
  * @category    plugin
- * @version     1.2.0
+ * @version     1.2.1
  * @author		By Bumkaka, Pathologic
  * @internal    @properties 
  * @internal    @events OnManagerTreeRender
@@ -14,4 +14,4 @@
  * @internal    @installset base
  */
 
-return require MODX_BASE_PATH . 'assets/plugins/console/console.plugin.php';
+return require MODX_BASE_PATH . 'assets/plugins/console/plugin.console.php';
